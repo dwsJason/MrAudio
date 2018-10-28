@@ -1,0 +1,10 @@
+C:\dev\MrAudio\MrAudio\ObjectListView\bin\Release\ObjectListView.XML
+C:\dev\MrAudio\MrAudio\ObjectListView\bin\Release\ObjectListView.dll
+C:\dev\MrAudio\MrAudio\ObjectListView\bin\Release\ObjectListView.pdb
+C:\dev\MrAudio\MrAudio\ObjectListView\obj\Release\ObjectListView2012.csprojAssemblyReference.cache
+C:\dev\MrAudio\MrAudio\ObjectListView\obj\Release\BrightIdeasSoftware.Properties.Resources.resources
+C:\dev\MrAudio\MrAudio\ObjectListView\obj\Release\BrightIdeasSoftware.ColumnSelectionForm.resources
+C:\dev\MrAudio\MrAudio\ObjectListView\obj\Release\ObjectListView2012.csproj.GenerateResource.cache
+C:\dev\MrAudio\MrAudio\ObjectListView\obj\Release\ObjectListView2012.csproj.CoreCompileInputs.cache
+C:\dev\MrAudio\MrAudio\ObjectListView\obj\Release\ObjectListView.dll
+C:\dev\MrAudio\MrAudio\ObjectListView\obj\Release\ObjectListView.pdb

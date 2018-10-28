@@ -1,0 +1,8 @@
+*.vpw
+*.vtg
+*.vpwhist
+.vs/
+*.vpj
+MrAudio/bin/Debug/
+MrAudio/bin/Release/
+MrAudio/obj/

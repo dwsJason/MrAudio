@@ -1,0 +1,9 @@
+C:\dev\MrAudio\MrAudio\WaveFormRendererLib\obj\Debug\WaveFormRendererLib.csprojAssemblyReference.cache
+C:\dev\MrAudio\MrAudio\WaveFormRendererLib\obj\Debug\WaveFormRendererLib.csproj.CoreCompileInputs.cache
+C:\dev\MrAudio\MrAudio\WaveFormRendererLib\bin\Debug\WaveFormRendererLib.dll
+C:\dev\MrAudio\MrAudio\WaveFormRendererLib\bin\Debug\WaveFormRendererLib.pdb
+C:\dev\MrAudio\MrAudio\WaveFormRendererLib\bin\Debug\NAudio.dll
+C:\dev\MrAudio\MrAudio\WaveFormRendererLib\bin\Debug\NAudio.xml
+C:\dev\MrAudio\MrAudio\WaveFormRendererLib\obj\Debug\WaveFormRendererLib.csproj.CopyComplete
+C:\dev\MrAudio\MrAudio\WaveFormRendererLib\obj\Debug\WaveFormRendererLib.dll
+C:\dev\MrAudio\MrAudio\WaveFormRendererLib\obj\Debug\WaveFormRendererLib.pdb
