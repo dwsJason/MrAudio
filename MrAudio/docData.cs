@@ -32,38 +32,18 @@ namespace MrAudio
                     break;
                 case ".aif":
                 case ".aiff":
-                    {
-                        AiffFileReader wfr = new AiffFileReader(pathName);
-                        return wfr;
-                        //result = wfr.ToSampleProvider() as WaveStream;
-                        //wfr.Dispose();
-                    }
-                    break;
                 case ".mp3":
-                    {
-                        Mp3FileReader wfr = new Mp3FileReader(pathName);
-                        return wfr;
-
-                        //result = wfr.ToSampleProvider() as WaveStream;
-                        //wfr.Dispose();
-                    }
-                    break;
                 case ".wav":
                     {
-                        WaveFileReader wfr = new WaveFileReader(pathName);
-                        return wfr;
-
-                        //result = wfr.ToSampleProvider() as WaveStream;
-                        //wfr.Dispose();
+                        AudioFileReader afr = new AudioFileReader(pathName);
+                        return afr;
                     }
-                    break;
                 case ".ntp":
                     {
                         var ms = new MemoryStream(m_waveData.ToArray());
                         var rs = new RawSourceWaveStream(ms, new WaveFormat(m_freq, 8, 1));
                         return rs;
                     }
-                    break;
                 default:
                     break;
             }
