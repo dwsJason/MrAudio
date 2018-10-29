@@ -357,12 +357,49 @@ namespace MrAudio
 
         }
 
+        //
+        // Convert a WaveStream, into another WaveStream
+        // at a different Frequency
+        // (Jump through hoops just to change the play rate, Ugh!)
+        //
+        private WaveStream ToFreq(WaveStream ws, int freq)
+        {
+            if (freq == ws.WaveFormat.SampleRate)
+                return ws;
+
+            ISampleProvider sp = ws.ToSampleProvider();
+            sp = sp.ToMono();
+
+            long numSamples = ws.Length;
+
+            float[] samples = new float[numSamples];
+
+            int len = sp.Read(samples, 0, (int)numSamples);
+
+            //short[] shortSamples = new short[len];
+            byte[] buffer = new byte[len * 2];
+
+            for (int idx = 0; idx < len; ++idx)
+            {
+                short sample = (short)(samples[idx] * 32768);
+                int bidx = idx * 2;
+                buffer[bidx + 0] = (byte)(sample & 0xFF);
+                buffer[bidx + 1] = (byte)(sample >> 8);
+            }
+
+            var ms = new MemoryStream(buffer);
+            var rs = new RawSourceWaveStream(ms, new WaveFormat(freq, 16, 1));
+            return rs;
+        }
+
         private void playButton_Click(object sender, EventArgs e)
         {
             if (null != m_dd)
             {
                 WaveStream ws = m_dd.ToWaveStream();
-                //AudioFileReader ws = new AudioFileReader(m_dd.m_path);
+
+                ws = ToFreq(ws, m_dd.m_freq);
+
                 var wo = new WaveOutEvent();
                 wo.NumberOfBuffers = 3;
                 wo.Volume = 1.0f;
