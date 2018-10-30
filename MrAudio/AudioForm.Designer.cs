@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MrAudio));
             this.waveInfoBox = new System.Windows.Forms.GroupBox();
+            this.ButtonUnalloc = new System.Windows.Forms.Button();
             this.buttonRealloc = new System.Windows.Forms.Button();
             this.checkPinned = new System.Windows.Forms.CheckBox();
             this.buttonResample = new System.Windows.Forms.Button();
@@ -80,6 +81,7 @@
             this.waveInfoBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.waveInfoBox.Controls.Add(this.ButtonUnalloc);
             this.waveInfoBox.Controls.Add(this.buttonRealloc);
             this.waveInfoBox.Controls.Add(this.checkPinned);
             this.waveInfoBox.Controls.Add(this.buttonResample);
@@ -98,6 +100,16 @@
             this.waveInfoBox.TabStop = false;
             this.waveInfoBox.Text = "Wave Information";
             // 
+            // ButtonUnalloc
+            // 
+            this.ButtonUnalloc.Location = new System.Drawing.Point(81, 69);
+            this.ButtonUnalloc.Name = "ButtonUnalloc";
+            this.ButtonUnalloc.Size = new System.Drawing.Size(75, 23);
+            this.ButtonUnalloc.TabIndex = 12;
+            this.ButtonUnalloc.Text = "Unallocate";
+            this.ButtonUnalloc.UseVisualStyleBackColor = true;
+            this.ButtonUnalloc.Click += new System.EventHandler(this.ButtonUnalloc_Click);
+            // 
             // buttonRealloc
             // 
             this.buttonRealloc.Location = new System.Drawing.Point(81, 39);
@@ -107,6 +119,7 @@
             this.buttonRealloc.TabIndex = 11;
             this.buttonRealloc.Text = "Reallocate";
             this.buttonRealloc.UseVisualStyleBackColor = true;
+            this.buttonRealloc.Click += new System.EventHandler(this.buttonRealloc_Click);
             // 
             // checkPinned
             // 
@@ -508,6 +521,7 @@
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.PictureBox pictureBoxGuide;
         private System.Windows.Forms.PictureBox pictureBoxMap;
+        private System.Windows.Forms.Button ButtonUnalloc;
     }
 }
 

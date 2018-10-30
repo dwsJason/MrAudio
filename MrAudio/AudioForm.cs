@@ -414,5 +414,115 @@ namespace MrAudio
             }
 
         }
+
+        int docAlloc(ref int[] allocMap, int sizePages)
+        {
+            int addr = -1;
+            int[] StepSizes = { 1,2,4,8,16,32,64,128,256 };
+            int step = 1;
+
+            // The Wave Size determines legal locations in RAM
+            if (sizePages <= 256)
+            {
+               // Find Step
+               for (int idx = 0; idx < StepSizes.Length; ++idx)
+               {
+                    step = StepSizes[idx];
+                    if (StepSizes[idx] >= sizePages)
+                        break;
+               }
+
+                // Search for a location
+                for (int ca = 0; ca < 256; ca += step)
+                {
+                    // Test This address
+                    int start = ca;
+                    int end = ca + sizePages;
+                    bool bFail = false;
+                    for (int idx = start; idx < end; ++idx)
+                    {
+                        if (allocMap[idx] >= 0)
+                        {
+                            bFail = true;
+                            break;
+                        }
+                    }
+                    if (!bFail)
+                    {
+                        addr = start;
+                        break;
+                    }
+                }
+            }
+
+            return addr;
+        }
+
+        //
+        //  Attempt to Allocate all the wave data into the DOC
+        //
+        private void buttonRealloc_Click(object sender, EventArgs e)
+        {
+            int[] allocMap = new int[256];
+
+            // -1 will indicate un-allocated
+            for (int idx = 0; idx < allocMap.Length; ++idx)
+            {
+                allocMap[idx] = -1;
+            }
+
+            // Reserve Memory used by pinned waves
+            foreach(docData dd in docFiles)
+            {
+                if (dd.m_pinned && (dd.m_address >= 0))
+                {
+                    int id = dd.m_index;
+                    int length = (dd.m_size+255) / 256;
+                    int endAddr = dd.m_address + length;
+
+                    for (int addr = dd.m_address; addr <= endAddr; ++addr)
+                    {
+                        allocMap[addr] = id;
+                    }
+                }
+                else
+                {
+                    dd.m_address = -1; // unallocated
+                }
+            }
+
+            // Sort the unallocated Audio Objects by size
+            List<docData> SortedList = docFiles.OrderByDescending(o => o.m_size).ToList();
+
+            foreach(docData dd in SortedList)
+            {
+                if (!dd.m_pinned && (dd.m_address < 0))
+                {
+                    dd.m_address = docAlloc(ref allocMap, (dd.m_size + 255) / 256);
+
+                    if (dd.m_address >= 0)
+                    {
+                        int id = dd.m_index;
+                        int length = (dd.m_size + 255) / 256;
+                        int endAddr = dd.m_address + length;
+
+                        for (int addr = dd.m_address; addr <= endAddr; ++addr)
+                        {
+                            allocMap[addr] = id;
+                        }
+                    }
+                }
+            }
+            this.fastObjectListView1.SetObjects(docFiles);
+        }
+
+        private void ButtonUnalloc_Click(object sender, EventArgs e)
+        {
+            if (null != m_dd)
+            {
+                m_dd.m_address = -1;
+                this.fastObjectListView1.SetObjects(docFiles);
+            }
+        }
     }
 }
