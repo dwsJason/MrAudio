@@ -132,6 +132,8 @@ namespace MrAudio
 
             m_dd = fastObjectListView1.SelectedObject as docData;
 
+            PaintMemory();
+
             //if ((selectedIndex >= 0)&&(selectedIndex < docFiles.Count))
             if (null != m_dd)
             {
@@ -514,6 +516,77 @@ namespace MrAudio
                 }
             }
             this.fastObjectListView1.SetObjects(docFiles);
+
+            PaintMemory();
+        }
+
+        private void FillRect(ref Bitmap bmp, int x, int y, int w, int h, Color c)
+        {
+            for (int ypos = y; ypos < (y+h); ++ypos)
+            {
+                for(int xpos = x; xpos < (x+w); ++xpos)
+                {
+                    bmp.SetPixel(xpos, ypos, c);
+                }
+            }
+        }
+        /// <summary>
+        ///  Plot the DocFiles List into the memory map window
+        /// </summary>
+        private void PaintMemory()
+        {
+            // Sort the unallocated Audio Objects by address
+            List<docData> SortedList = docFiles.OrderBy(o => o.m_address).ToList();
+
+            Bitmap bmp = new Bitmap(1024, 32);
+
+            int idx = 0;
+
+            foreach(docData dd in SortedList)
+            {
+                if (dd.m_address >= 0)
+                {
+                    if (dd.m_pinned)
+                    {
+                        Color fill = Color.DarkSlateBlue;
+                        if (1 == (idx & 1))
+                            fill = Color.DarkRed;
+
+                        int x = dd.m_address * 4;
+                        int w = ((dd.m_size + 255) / 256) * 4;
+                        FillRect(ref bmp, x, 3, w, 26, fill);
+                    }
+                    else
+                    {
+                        Color fill = Color.DarkGray;
+                        if (1 == (idx & 1))
+                            fill = Color.LightGray;
+
+                        int x = dd.m_address * 4;
+                        int w = ((dd.m_size + 255) / 256) * 4;
+                        FillRect(ref bmp, x, 2, w, 28, fill);
+                    }
+
+                    if (m_dd == dd)
+                    {
+                        // Draw Lasso
+                        Color fill = Color.HotPink;
+
+                        int x = dd.m_address * 4;
+                        int w = ((dd.m_size + 255) / 256) * 4;
+                        FillRect(ref bmp, x,  0, w, 3, fill);
+                        FillRect(ref bmp, x, 29, w, 3, fill);
+                        FillRect(ref bmp, x, 3, 3, 26, fill);
+                        FillRect(ref bmp, x + w - 3, 3, 3, 26, fill);
+                    }
+
+                    ++idx;
+                }
+            }
+
+            pictureBoxMap.ClientSize = new Size(1024, 32);
+            pictureBoxMap.Image = bmp;
+
         }
 
         private void ButtonUnalloc_Click(object sender, EventArgs e)
