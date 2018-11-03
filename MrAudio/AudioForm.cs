@@ -18,6 +18,8 @@ namespace MrAudio
         public List<docData> docFiles = new List<docData>();
         docData m_dd = null;
 
+        private bool m_checkupdate = false;
+
         private readonly WaveFormRenderer waveFormRenderer;
         private readonly WaveFormRendererSettings standardSettings;
 
@@ -139,7 +141,9 @@ namespace MrAudio
             {
                 docData dd = m_dd;
 
+                m_checkupdate = true;
                 checkPinned.Checked = dd.m_pinned;
+                m_checkupdate = false;
                 comboBoxPlayRate.Text = String.Format("{0}",dd.m_freq);
 
                 RenderWaveform();
@@ -346,7 +350,10 @@ namespace MrAudio
 
         private void checkPinned_CheckedChanged(object sender, EventArgs e)
         {
-
+            if (null != m_dd && !m_checkupdate)
+            {
+                m_dd.m_pinned = !m_dd.m_pinned;
+            }
         }
 
         private void comboBoxPlayRate_SelectedIndexChanged(object sender, EventArgs e)
@@ -508,7 +515,7 @@ namespace MrAudio
                         int length = (dd.m_size + 255) / 256;
                         int endAddr = dd.m_address + length;
 
-                        for (int addr = dd.m_address; addr <= endAddr; ++addr)
+                        for (int addr = dd.m_address; addr < endAddr; ++addr)
                         {
                             allocMap[addr] = id;
                         }
@@ -595,6 +602,40 @@ namespace MrAudio
             {
                 m_dd.m_address = -1;
                 this.fastObjectListView1.SetObjects(docFiles);
+                PaintMemory();
+            }
+        }
+
+        private void buttonResample_Click(object sender, EventArgs e)
+        {
+            if (null != m_dd)
+            {
+                int target_freq = 0;
+                Int32.TryParse(comboBoxResampleRate.Text, out target_freq);
+
+                switch (resampleBox.SelectedIndex)
+                {
+                    case 0:
+                        // Frequency
+                        break;
+                    case 1:
+                        // Size
+                        if (target_freq > 0)
+                        {
+                            // What Freq would equal this number of bytes
+                            target_freq *= m_dd.m_freq;
+                            target_freq /= m_dd.m_size;
+                        }
+                        break;
+                }
+
+                m_dd.m_size = target_freq * m_dd.m_size / m_dd.m_freq;
+                m_dd.m_freq = target_freq;
+                comboBoxPlayRate.Text = String.Format("{0}", target_freq);
+
+                m_dd.m_address = -1;
+                this.fastObjectListView1.SetObjects(docFiles);
+                PaintMemory();
             }
         }
     }

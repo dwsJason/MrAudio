@@ -142,6 +142,7 @@
             this.buttonResample.TabIndex = 9;
             this.buttonResample.Text = "Resample";
             this.buttonResample.UseVisualStyleBackColor = true;
+            this.buttonResample.Click += new System.EventHandler(this.buttonResample_Click);
             // 
             // resampleBox
             // 
