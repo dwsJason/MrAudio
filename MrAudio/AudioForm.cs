@@ -89,6 +89,7 @@ namespace MrAudio
 
         private void comboBoxPlayRate_TextChanged(object sender, System.EventArgs e)
         {
+#if false
             Int32 playRate = 0;
 
             if (Int32.TryParse(comboBoxPlayRate.Text, out playRate))
@@ -99,6 +100,7 @@ namespace MrAudio
                     this.fastObjectListView1.SetObjects(docFiles);
                 }
             }
+#endif
         }
 
         //
@@ -367,11 +369,49 @@ namespace MrAudio
         }
 
         //
+        // Resample a WaveStream into another WaveStream
+        // at a different resampling rate
+        //
+        private WaveStream ToFreq(WaveStream ws, int freq)
+        {
+            if (freq == ws.WaveFormat.SampleRate)
+                return ws;
+            //-----------------------------------
+            var outFormat = new WaveFormat(freq, 1);
+            var resampler = new MediaFoundationResampler(ws, outFormat);
+            resampler.ResamplerQuality = 60;
+
+            //-----------------------------------
+            ISampleProvider sp = resampler.ToSampleProvider();
+
+            long numSamples = ws.Length * ws.WaveFormat.SampleRate / freq;
+
+            float[] samples = new float[numSamples];
+
+            int len = sp.Read(samples, 0, (int)numSamples);
+
+            //short[] shortSamples = new short[len];
+            byte[] buffer = new byte[len * 2];
+
+            for (int idx = 0; idx < len; ++idx)
+            {
+                short sample = (short)(samples[idx] * 32768);
+                int bidx = idx * 2;
+                buffer[bidx + 0] = (byte)(sample & 0xFF);
+                buffer[bidx + 1] = (byte)(sample >> 8);
+            }
+
+            var ms = new MemoryStream(buffer);
+            var rs = new RawSourceWaveStream(ms, new WaveFormat(freq, 16, 1));
+            return rs;
+        }
+
+        //
         // Convert a WaveStream, into another WaveStream
         // at a different Frequency
         // (Jump through hoops just to change the play rate, Ugh!)
         //
-        private WaveStream ToFreq(WaveStream ws, int freq)
+        private WaveStream AtFreq(WaveStream ws, int freq)
         {
             if (freq == ws.WaveFormat.SampleRate)
                 return ws;
@@ -405,9 +445,20 @@ namespace MrAudio
         {
             if (null != m_dd)
             {
+                Int32 playRate = 0;
+
+                if (!Int32.TryParse(comboBoxPlayRate.Text, out playRate))
+                {
+                    return;
+                }
+
                 WaveStream ws = m_dd.ToWaveStream();
 
+                // Resample
                 ws = ToFreq(ws, m_dd.m_freq);
+
+                // Retune
+                ws = AtFreq(ws, playRate);
 
                 var wo = new WaveOutEvent();
                 wo.NumberOfBuffers = 3;
