@@ -388,6 +388,9 @@ namespace MrAudio
         //
         private WaveStream ToFreq(WaveStream ws, int freq)
         {
+            // Start at the beginning
+            ws.Position = 0;
+
             if (freq == ws.WaveFormat.SampleRate)
                 return ws;
             //-----------------------------------
@@ -398,7 +401,7 @@ namespace MrAudio
             //-----------------------------------
             ISampleProvider sp = resampler.ToSampleProvider();
 
-            long numSamples = ws.Length * ws.WaveFormat.SampleRate / freq;
+            long numSamples = ws.Length * freq / ws.WaveFormat.SampleRate;
 
             float[] samples = new float[numSamples];
 
@@ -425,6 +428,8 @@ namespace MrAudio
         //
         private byte[] ToByteArray(WaveStream ws)
         {
+            ws.Position = 0;
+            
             ISampleProvider sp = ws.ToSampleProvider();
             sp = sp.ToMono();
 
@@ -441,6 +446,8 @@ namespace MrAudio
                 byte sample = (byte)(samples[idx] * 256);
                 buffer[idx] = sample;
             }
+
+            ws.Dispose();
 
             return buffer;
         }
@@ -727,6 +734,8 @@ namespace MrAudio
                 int target_freq = 0;
                 Int32.TryParse(comboBoxResampleRate.Text, out target_freq);
 
+                WaveStream ws = m_dd.ToWaveStream();
+
                 switch (resampleBox.SelectedIndex)
                 {
                     case 0:
@@ -736,19 +745,47 @@ namespace MrAudio
                         // Size
                         if (target_freq > 0)
                         {
+                            int targetBytes = target_freq;
+
                             // What Freq would equal this number of bytes
-                            float targetBytes = (float)target_freq;
+                            float targetFreq = (float)target_freq;
 
-                            targetBytes *= m_dd.m_imFreq;
-                            targetBytes /= m_dd.m_imSize;
+                            targetFreq *= m_dd.m_imFreq;
+                            targetFreq /= m_dd.m_imSize;
 
-                            target_freq = (int)targetBytes;
+                            // The math is done here, if we set the resample quality to linear
+                            // (lowest)
+
+                            // since we are using a high resample quality, that applies a low-pass
+                            // filter, our wave ends up being a little smaller, than expected
+
+                            target_freq = (int)targetFreq;
+
+                            // hunt for the ideal freq, to hit our target size
+                            int prev_freq = target_freq;
+                            while (true)
+                            {
+                                byte[] tempWave = ToByteArray(ToFreq(ws, target_freq));
+
+                                int delta = targetBytes - tempWave.Length;
+
+                                if (0 == delta)
+                                    break;
+                                if (delta < 0)
+                                {
+                                    target_freq = prev_freq;
+                                    break;
+                                }
+
+                                prev_freq = target_freq;
+                                target_freq++;
+                            }
                         }
                         break;
                 }
                 // If we resample then convert to byte array, and take the length of that
                 // then it should be accurate
-                byte[] resampled_wave = ToByteArray(ToFreq(m_dd.ToWaveStream(), target_freq));
+                byte[] resampled_wave = ToByteArray(ToFreq(ws, target_freq));
                 m_dd.m_size = resampled_wave.Length;
                 //m_dd.m_size = target_freq * m_dd.m_size / m_dd.m_freq;
                 m_dd.m_freq = target_freq;
@@ -757,6 +794,7 @@ namespace MrAudio
                 m_dd.m_address = -1;
                 this.fastObjectListView1.SetObjects(docFiles);
                 PaintMemory();
+                ws.Dispose();
             }
         }
 
