@@ -136,12 +136,18 @@ namespace MrAudio
 
             m_dd = fastObjectListView1.SelectedObject as docData;
 
+            labelName.Text = "";
+            labelPath.Text = "";
+
             PaintMemory();
 
             //if ((selectedIndex >= 0)&&(selectedIndex < docFiles.Count))
             if (null != m_dd)
             {
                 docData dd = m_dd;
+
+                labelName.Text = dd.m_name;
+                labelPath.Text = String.Format("{0}, {1} hz, {2} bytes", dd.m_path, dd.m_imFreq, dd.m_imSize);
 
                 m_checkupdate = true;
                 checkPinned.Checked = dd.m_pinned;
@@ -230,6 +236,8 @@ namespace MrAudio
                         dd.m_freq = mfr.WaveFormat.SampleRate;
                         dd.m_index = docFiles.Count;
                         dd.m_size = (int)0;
+                        dd.m_imSize = dd.m_size;
+                        dd.m_imFreq = dd.m_freq;
                         docFiles.Add(dd);
                         mfr.Dispose();
                     }
@@ -246,6 +254,8 @@ namespace MrAudio
                         dd.m_freq = wfr.WaveFormat.SampleRate;
                         dd.m_index = docFiles.Count;
                         dd.m_size = (int)wfr.SampleCount;
+                        dd.m_imSize = dd.m_size;
+                        dd.m_imFreq = dd.m_freq;
                         docFiles.Add(dd);
                         wfr.Dispose();
                     }
@@ -272,6 +282,8 @@ namespace MrAudio
                         dd.m_freq = wfr.Mp3WaveFormat.SampleRate;
                         dd.m_index = docFiles.Count;
                         dd.m_size = SampleCount;
+                        dd.m_imSize = dd.m_size;
+                        dd.m_imFreq = dd.m_freq;
                         docFiles.Add(dd);
                         wfr.Dispose();
                     }
@@ -295,6 +307,8 @@ namespace MrAudio
                         dd.m_freq = wfr.WaveFormat.SampleRate;
                         dd.m_index = docFiles.Count;
                         dd.m_size = (int)wfr.SampleCount;
+                        dd.m_imSize = dd.m_size;
+                        dd.m_imFreq = dd.m_freq;
                         docFiles.Add(dd);
                         wfr.Dispose();
                     }
@@ -319,6 +333,8 @@ namespace MrAudio
                                 dd.m_freq = 10000; //$$JGA todo, take into account tuning
                                 dd.m_index = docFiles.Count;
                                 dd.m_size = inst.m_length;
+                                dd.m_imSize = dd.m_size;
+                                dd.m_imFreq = dd.m_freq;
                                 dd.m_pinned = true;
                                 dd.m_address = inst.m_address;
                                 dd.m_waveData = inst.m_waveData;
@@ -330,8 +346,6 @@ namespace MrAudio
                 default:
                     break;
             }
-
-            
 
             // Force the List View to Refresh
             this.fastObjectListView1.SetObjects(docFiles);
@@ -404,6 +418,55 @@ namespace MrAudio
             var ms = new MemoryStream(buffer);
             var rs = new RawSourceWaveStream(ms, new WaveFormat(freq, 16, 1));
             return rs;
+        }
+
+        //
+        // WaveStream to Byte Array
+        //
+        private byte[] ToByteArray(WaveStream ws)
+        {
+            ISampleProvider sp = ws.ToSampleProvider();
+            sp = sp.ToMono();
+
+            long numSamples = ws.Length;
+
+            float[] samples = new float[numSamples];
+
+            int len = sp.Read(samples, 0, (int)numSamples);
+
+            byte[] buffer = new byte[len];
+
+            for (int idx = 0; idx < len; ++idx)
+            {
+                byte sample = (byte)(samples[idx] * 256);
+                buffer[idx] = sample;
+            }
+
+            return buffer;
+        }
+
+        //
+        // WaveStream to float Array
+        //
+        private float[] ToFloatArray(WaveStream ws)
+        {
+            ISampleProvider sp = ws.ToSampleProvider();
+            sp = sp.ToMono();
+
+            long numSamples = ws.Length;
+
+            float[] samples = new float[numSamples];
+
+            int len = sp.Read(samples, 0, (int)numSamples);
+
+            float[] buffer = new float[len];
+
+            for (int idx = 0; idx < len; ++idx)
+            {
+                buffer[idx] = samples[idx];
+            }
+
+            return buffer;
         }
 
         //
@@ -674,17 +737,37 @@ namespace MrAudio
                         if (target_freq > 0)
                         {
                             // What Freq would equal this number of bytes
-                            target_freq *= m_dd.m_freq;
-                            target_freq /= m_dd.m_size;
+                            float targetBytes = (float)target_freq;
+
+                            targetBytes *= m_dd.m_imFreq;
+                            targetBytes /= m_dd.m_imSize;
+
+                            target_freq = (int)targetBytes;
                         }
                         break;
                 }
-
-                m_dd.m_size = target_freq * m_dd.m_size / m_dd.m_freq;
+                // If we resample then convert to byte array, and take the length of that
+                // then it should be accurate
+                byte[] resampled_wave = ToByteArray(ToFreq(m_dd.ToWaveStream(), target_freq));
+                m_dd.m_size = resampled_wave.Length;
+                //m_dd.m_size = target_freq * m_dd.m_size / m_dd.m_freq;
                 m_dd.m_freq = target_freq;
                 comboBoxPlayRate.Text = String.Format("{0}", target_freq);
 
                 m_dd.m_address = -1;
+                this.fastObjectListView1.SetObjects(docFiles);
+                PaintMemory();
+            }
+        }
+
+        private void buttonReset_Click(object sender, EventArgs e)
+        {
+            if (null != m_dd)
+            {
+                m_dd.m_freq = m_dd.m_imFreq;
+                m_dd.m_size = m_dd.m_imSize;
+                m_dd.m_address = -1;
+                comboBoxPlayRate.Text = String.Format("{0}", m_dd.m_freq);
                 this.fastObjectListView1.SetObjects(docFiles);
                 PaintMemory();
             }

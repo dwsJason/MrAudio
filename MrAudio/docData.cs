@@ -14,7 +14,9 @@ namespace MrAudio
         public string m_name = "<none>";
         public string m_path = "<none>";
         public int m_freq = 0;
+        public int m_imFreq = 0; // import frequence
         public int m_size = 0;
+        public int m_imSize = 0; // import size
         public int m_address = -1; // byte address in doc ram
         public List<byte> m_waveData = new List<byte>();
         public bool m_pinned = false;   // meaning it can't move

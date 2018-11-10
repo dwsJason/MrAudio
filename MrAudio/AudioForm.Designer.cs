@@ -63,6 +63,9 @@
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.pictureBoxGuide = new System.Windows.Forms.PictureBox();
             this.pictureBoxMap = new System.Windows.Forms.PictureBox();
+            this.buttonReset = new System.Windows.Forms.Button();
+            this.labelName = new System.Windows.Forms.Label();
+            this.labelPath = new System.Windows.Forms.Label();
             this.waveInfoBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWave)).BeginInit();
             this.audioBankBox.SuspendLayout();
@@ -81,6 +84,9 @@
             this.waveInfoBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.waveInfoBox.Controls.Add(this.labelPath);
+            this.waveInfoBox.Controls.Add(this.labelName);
+            this.waveInfoBox.Controls.Add(this.buttonReset);
             this.waveInfoBox.Controls.Add(this.ButtonUnalloc);
             this.waveInfoBox.Controls.Add(this.buttonRealloc);
             this.waveInfoBox.Controls.Add(this.checkPinned);
@@ -102,7 +108,7 @@
             // 
             // ButtonUnalloc
             // 
-            this.ButtonUnalloc.Location = new System.Drawing.Point(81, 69);
+            this.ButtonUnalloc.Location = new System.Drawing.Point(81, 132);
             this.ButtonUnalloc.Name = "ButtonUnalloc";
             this.ButtonUnalloc.Size = new System.Drawing.Size(75, 23);
             this.ButtonUnalloc.TabIndex = 12;
@@ -112,7 +118,7 @@
             // 
             // buttonRealloc
             // 
-            this.buttonRealloc.Location = new System.Drawing.Point(81, 39);
+            this.buttonRealloc.Location = new System.Drawing.Point(81, 102);
             this.buttonRealloc.Margin = new System.Windows.Forms.Padding(4);
             this.buttonRealloc.Name = "buttonRealloc";
             this.buttonRealloc.Size = new System.Drawing.Size(75, 23);
@@ -124,7 +130,7 @@
             // checkPinned
             // 
             this.checkPinned.AutoSize = true;
-            this.checkPinned.Location = new System.Drawing.Point(9, 46);
+            this.checkPinned.Location = new System.Drawing.Point(9, 109);
             this.checkPinned.Margin = new System.Windows.Forms.Padding(4);
             this.checkPinned.Name = "checkPinned";
             this.checkPinned.Size = new System.Drawing.Size(59, 17);
@@ -135,7 +141,7 @@
             // 
             // buttonResample
             // 
-            this.buttonResample.Location = new System.Drawing.Point(81, 15);
+            this.buttonResample.Location = new System.Drawing.Point(81, 78);
             this.buttonResample.Margin = new System.Windows.Forms.Padding(4);
             this.buttonResample.Name = "buttonResample";
             this.buttonResample.Size = new System.Drawing.Size(75, 23);
@@ -152,7 +158,7 @@
             this.resampleBox.Items.AddRange(new object[] {
             "Resample Hz",
             "Resample Bytes"});
-            this.resampleBox.Location = new System.Drawing.Point(302, 42);
+            this.resampleBox.Location = new System.Drawing.Point(302, 105);
             this.resampleBox.Margin = new System.Windows.Forms.Padding(4);
             this.resampleBox.Name = "resampleBox";
             this.resampleBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -161,7 +167,7 @@
             // 
             // buttonNormalize
             // 
-            this.buttonNormalize.Location = new System.Drawing.Point(0, 15);
+            this.buttonNormalize.Location = new System.Drawing.Point(0, 78);
             this.buttonNormalize.Margin = new System.Windows.Forms.Padding(4);
             this.buttonNormalize.Name = "buttonNormalize";
             this.buttonNormalize.Size = new System.Drawing.Size(75, 23);
@@ -179,7 +185,7 @@
             "11025",
             "5500",
             "2500"});
-            this.comboBoxResampleRate.Location = new System.Drawing.Point(407, 42);
+            this.comboBoxResampleRate.Location = new System.Drawing.Point(407, 105);
             this.comboBoxResampleRate.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxResampleRate.Name = "comboBoxResampleRate";
             this.comboBoxResampleRate.Size = new System.Drawing.Size(65, 21);
@@ -191,7 +197,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label1.Location = new System.Drawing.Point(322, 18);
+            this.label1.Location = new System.Drawing.Point(322, 81);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 15);
@@ -208,7 +214,7 @@
             "22050",
             "11025",
             "8000"});
-            this.comboBoxPlayRate.Location = new System.Drawing.Point(407, 15);
+            this.comboBoxPlayRate.Location = new System.Drawing.Point(407, 78);
             this.comboBoxPlayRate.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxPlayRate.Name = "comboBoxPlayRate";
             this.comboBoxPlayRate.Size = new System.Drawing.Size(65, 21);
@@ -222,7 +228,7 @@
             this.playButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.playButton.Image = ((System.Drawing.Image)(resources.GetObject("playButton.Image")));
             this.playButton.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.playButton.Location = new System.Drawing.Point(407, 110);
+            this.playButton.Location = new System.Drawing.Point(407, 132);
             this.playButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.playButton.Name = "playButton";
             this.playButton.Size = new System.Drawing.Size(65, 29);
@@ -453,6 +459,35 @@
             this.pictureBoxMap.TabIndex = 15;
             this.pictureBoxMap.TabStop = false;
             // 
+            // buttonReset
+            // 
+            this.buttonReset.Location = new System.Drawing.Point(0, 132);
+            this.buttonReset.Name = "buttonReset";
+            this.buttonReset.Size = new System.Drawing.Size(75, 23);
+            this.buttonReset.TabIndex = 13;
+            this.buttonReset.Text = "Reset";
+            this.buttonReset.UseVisualStyleBackColor = true;
+            this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
+            // 
+            // labelName
+            // 
+            this.labelName.AutoSize = true;
+            this.labelName.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.labelName.Location = new System.Drawing.Point(-1, 17);
+            this.labelName.Name = "labelName";
+            this.labelName.Size = new System.Drawing.Size(76, 13);
+            this.labelName.TabIndex = 14;
+            this.labelName.Text = "Wave Name";
+            // 
+            // labelPath
+            // 
+            this.labelPath.AutoSize = true;
+            this.labelPath.Location = new System.Drawing.Point(0, 34);
+            this.labelPath.Name = "labelPath";
+            this.labelPath.Size = new System.Drawing.Size(89, 13);
+            this.labelPath.TabIndex = 15;
+            this.labelPath.Text = "source pathname";
+            // 
             // MrAudio
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -523,6 +558,9 @@
         private System.Windows.Forms.PictureBox pictureBoxGuide;
         private System.Windows.Forms.PictureBox pictureBoxMap;
         private System.Windows.Forms.Button ButtonUnalloc;
+        private System.Windows.Forms.Label labelPath;
+        private System.Windows.Forms.Label labelName;
+        private System.Windows.Forms.Button buttonReset;
     }
 }
 
