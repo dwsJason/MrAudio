@@ -178,17 +178,20 @@ namespace MrAudio
         private void RenderWaveform()
         {
             pictureBoxWave.Image = null;
-            Enabled = false;
-            var settings = standardSettings;
-            settings.Width = pictureBoxWave.Width;
-            if (pictureBoxWave.Width > m_dd.m_size)
+            if (null != m_dd)
             {
-                settings.Width = m_dd.m_size;
+                Enabled = false;
+                var settings = standardSettings;
+                settings.Width = pictureBoxWave.Width;
+                if (pictureBoxWave.Width > m_dd.m_size)
+                {
+                    settings.Width = m_dd.m_size;
+                }
+                settings.TopHeight = pictureBoxWave.Height / 2;
+                settings.BottomHeight = pictureBoxWave.Height / 2;
+                var peakProvider = new MaxPeakProvider();
+                Task.Factory.StartNew(() => RenderThreadFunc(peakProvider, settings));
             }
-            settings.TopHeight = pictureBoxWave.Height/2;
-            settings.BottomHeight = pictureBoxWave.Height/2;
-            var peakProvider = new MaxPeakProvider();
-            Task.Factory.StartNew(() => RenderThreadFunc(peakProvider, settings));
         }
 
         private void RenderThreadFunc(IPeakProvider peakProvider, WaveFormRendererSettings settings)
@@ -809,6 +812,28 @@ namespace MrAudio
                 this.fastObjectListView1.SetObjects(docFiles);
                 PaintMemory();
             }
+        }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void newBankToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Clear Wave Info
+            labelName.Text = "<None>";
+            labelPath.Text = "";
+            // Nothing Selected
+            m_dd = null;
+            // Empty List of Waves
+            docFiles.Clear();
+            // Refresh List View
+            this.fastObjectListView1.SetObjects(docFiles);
+            // Refresh Allocated Memory Map
+            PaintMemory();
+            // Refresh Selected Wave
+            RenderWaveform();
         }
     }
 }

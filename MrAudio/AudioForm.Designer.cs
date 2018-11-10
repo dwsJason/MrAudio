@@ -30,6 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MrAudio));
             this.waveInfoBox = new System.Windows.Forms.GroupBox();
+            this.labelPath = new System.Windows.Forms.Label();
+            this.labelName = new System.Windows.Forms.Label();
+            this.buttonReset = new System.Windows.Forms.Button();
             this.ButtonUnalloc = new System.Windows.Forms.Button();
             this.buttonRealloc = new System.Windows.Forms.Button();
             this.checkPinned = new System.Windows.Forms.CheckBox();
@@ -63,9 +66,6 @@
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.pictureBoxGuide = new System.Windows.Forms.PictureBox();
             this.pictureBoxMap = new System.Windows.Forms.PictureBox();
-            this.buttonReset = new System.Windows.Forms.Button();
-            this.labelName = new System.Windows.Forms.Label();
-            this.labelPath = new System.Windows.Forms.Label();
             this.waveInfoBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWave)).BeginInit();
             this.audioBankBox.SuspendLayout();
@@ -105,6 +105,35 @@
             this.waveInfoBox.TabIndex = 0;
             this.waveInfoBox.TabStop = false;
             this.waveInfoBox.Text = "Wave Information";
+            // 
+            // labelPath
+            // 
+            this.labelPath.AutoSize = true;
+            this.labelPath.Location = new System.Drawing.Point(0, 34);
+            this.labelPath.Name = "labelPath";
+            this.labelPath.Size = new System.Drawing.Size(89, 13);
+            this.labelPath.TabIndex = 15;
+            this.labelPath.Text = "source pathname";
+            // 
+            // labelName
+            // 
+            this.labelName.AutoSize = true;
+            this.labelName.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.labelName.Location = new System.Drawing.Point(-1, 17);
+            this.labelName.Name = "labelName";
+            this.labelName.Size = new System.Drawing.Size(76, 13);
+            this.labelName.TabIndex = 14;
+            this.labelName.Text = "Wave Name";
+            // 
+            // buttonReset
+            // 
+            this.buttonReset.Location = new System.Drawing.Point(0, 132);
+            this.buttonReset.Name = "buttonReset";
+            this.buttonReset.Size = new System.Drawing.Size(75, 23);
+            this.buttonReset.TabIndex = 13;
+            this.buttonReset.Text = "Reset";
+            this.buttonReset.UseVisualStyleBackColor = true;
+            this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
             // 
             // ButtonUnalloc
             // 
@@ -359,39 +388,41 @@
             // newBankToolStripMenuItem
             // 
             this.newBankToolStripMenuItem.Name = "newBankToolStripMenuItem";
-            this.newBankToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.newBankToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newBankToolStripMenuItem.Text = "New Bank";
+            this.newBankToolStripMenuItem.Click += new System.EventHandler(this.newBankToolStripMenuItem_Click);
             // 
             // loadBankToolStripMenuItem
             // 
             this.loadBankToolStripMenuItem.Name = "loadBankToolStripMenuItem";
-            this.loadBankToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.loadBankToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadBankToolStripMenuItem.Text = "Load Bank";
             // 
             // saveBankToolStripMenuItem
             // 
             this.saveBankToolStripMenuItem.Name = "saveBankToolStripMenuItem";
-            this.saveBankToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.saveBankToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveBankToolStripMenuItem.Text = "Save Bank";
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportToolStripMenuItem.Text = "Export";
             // 
             // importAudioToolStripMenuItem
             // 
             this.importAudioToolStripMenuItem.Name = "importAudioToolStripMenuItem";
-            this.importAudioToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.importAudioToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importAudioToolStripMenuItem.Text = "Import Audio";
             this.importAudioToolStripMenuItem.Click += new System.EventHandler(this.importAudioToolStripMenuItem_Click);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.quitToolStripMenuItem.Text = "Quit";
+            this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
             // statusStrip
             // 
@@ -458,35 +489,6 @@
             this.pictureBoxMap.Size = new System.Drawing.Size(1006, 32);
             this.pictureBoxMap.TabIndex = 15;
             this.pictureBoxMap.TabStop = false;
-            // 
-            // buttonReset
-            // 
-            this.buttonReset.Location = new System.Drawing.Point(0, 132);
-            this.buttonReset.Name = "buttonReset";
-            this.buttonReset.Size = new System.Drawing.Size(75, 23);
-            this.buttonReset.TabIndex = 13;
-            this.buttonReset.Text = "Reset";
-            this.buttonReset.UseVisualStyleBackColor = true;
-            this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
-            // 
-            // labelName
-            // 
-            this.labelName.AutoSize = true;
-            this.labelName.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.labelName.Location = new System.Drawing.Point(-1, 17);
-            this.labelName.Name = "labelName";
-            this.labelName.Size = new System.Drawing.Size(76, 13);
-            this.labelName.TabIndex = 14;
-            this.labelName.Text = "Wave Name";
-            // 
-            // labelPath
-            // 
-            this.labelPath.AutoSize = true;
-            this.labelPath.Location = new System.Drawing.Point(0, 34);
-            this.labelPath.Name = "labelPath";
-            this.labelPath.Size = new System.Drawing.Size(89, 13);
-            this.labelPath.TabIndex = 15;
-            this.labelPath.Text = "source pathname";
             // 
             // MrAudio
             // 
