@@ -835,5 +835,40 @@ namespace MrAudio
             // Refresh Selected Wave
             RenderWaveform();
         }
+
+        //
+        // Save out data into a bankfile, so we can load it back in later
+        //
+        void SaveBankDefinition(string pathname)
+        {
+            // I think all I need to know is
+            // basename,pinned status
+            // pathname,freq,size
+            using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(pathname))
+            {
+                file.WriteLine("#/MrAudio");
+                file.WriteLine("version=1");
+                foreach (docData dd in docFiles)
+                {
+                    file.WriteLine(string.Format("{0},{1}", dd.m_name, dd.m_pinned));
+                    String outString = string.Format("{0},{1},{2}", dd.m_path, dd.m_freq, dd.m_size);
+                    file.WriteLine(outString);
+                }
+            }
+        }
+
+        //
+        //  Choose the name of the soundbank definition to save
+        //
+        private void saveBankToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult result = saveSoundBankDialog.ShowDialog();
+
+            if (DialogResult.OK == result)
+            {
+                SaveBankDefinition(saveSoundBankDialog.FileName);
+            }
+        }
     }
 }

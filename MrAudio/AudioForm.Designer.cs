@@ -388,39 +388,40 @@
             // newBankToolStripMenuItem
             // 
             this.newBankToolStripMenuItem.Name = "newBankToolStripMenuItem";
-            this.newBankToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newBankToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.newBankToolStripMenuItem.Text = "New Bank";
             this.newBankToolStripMenuItem.Click += new System.EventHandler(this.newBankToolStripMenuItem_Click);
             // 
             // loadBankToolStripMenuItem
             // 
             this.loadBankToolStripMenuItem.Name = "loadBankToolStripMenuItem";
-            this.loadBankToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadBankToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.loadBankToolStripMenuItem.Text = "Load Bank";
             // 
             // saveBankToolStripMenuItem
             // 
             this.saveBankToolStripMenuItem.Name = "saveBankToolStripMenuItem";
-            this.saveBankToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveBankToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.saveBankToolStripMenuItem.Text = "Save Bank";
+            this.saveBankToolStripMenuItem.Click += new System.EventHandler(this.saveBankToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.exportToolStripMenuItem.Text = "Export";
             // 
             // importAudioToolStripMenuItem
             // 
             this.importAudioToolStripMenuItem.Name = "importAudioToolStripMenuItem";
-            this.importAudioToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importAudioToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.importAudioToolStripMenuItem.Text = "Import Audio";
             this.importAudioToolStripMenuItem.Click += new System.EventHandler(this.importAudioToolStripMenuItem_Click);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -449,7 +450,11 @@
             // 
             // saveSoundBankDialog
             // 
+            this.saveSoundBankDialog.CheckFileExists = true;
+            this.saveSoundBankDialog.DefaultExt = "bnk";
+            this.saveSoundBankDialog.Filter = "Sound Bank|*.bnk";
             this.saveSoundBankDialog.RestoreDirectory = true;
+            this.saveSoundBankDialog.Title = "Save Bank";
             // 
             // splitContainer3
             // 
