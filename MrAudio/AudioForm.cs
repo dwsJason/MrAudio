@@ -859,6 +859,64 @@ namespace MrAudio
         }
 
         //
+        // Create / or return existing docdata
+        //
+        docData GetDocData(string waveName, string pathName)
+        {
+            foreach(docData dd in docFiles)
+            {
+                if (dd.m_name == waveName)
+                {
+                    if (dd.m_path == pathName)
+                    {
+                        return dd;
+                    }
+                }
+            }
+
+            importAudio(pathName);
+
+            return GetDocData(waveName, pathName);
+        }
+
+        //
+        // Load Sound Bank Definition
+        //
+        void LoadSoundBankDefinition(string pathname)
+        {
+            // make sure we've got a clean slate
+            newBankToolStripMenuItem_Click(null, null);
+
+            string[] lines = File.ReadAllLines(pathname);
+
+            string header1 = string.Format("#/MrAudio");
+            string version = string.Format("version=1");
+
+            if ((lines.Length > 2)&&(header1 == lines[0])&&(version==lines[1]))
+            {
+                // Parse the Bank Strings
+                for (int idx = 2; idx < lines.Length; idx+=2)
+                {
+                    string[] np = lines[idx].Split(',');
+                    string[] details = lines[idx + 1].Split(',');
+
+                    string waveName = np[0];
+                    string pinned = np[1];
+                    string path = details[0];
+                    string freq = details[1];
+                    string size = details[2];
+
+                    docData dd = GetDocData(waveName, path);
+
+                    bool.TryParse(pinned, out dd.m_pinned);
+                    int.TryParse(freq, out dd.m_freq);
+                    int.TryParse(size, out dd.m_size);
+                    this.fastObjectListView1.SetObjects(docFiles);
+                }
+            }
+        }
+
+        //
         //  Choose the name of the soundbank definition to save
         //
         private void saveBankToolStripMenuItem_Click(object sender, EventArgs e)
@@ -868,6 +926,16 @@ namespace MrAudio
             if (DialogResult.OK == result)
             {
                 SaveBankDefinition(saveSoundBankDialog.FileName);
+            }
+        }
+
+        private void loadBankToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult result = openSoundBankDialog.ShowDialog();
+
+            if (DialogResult.OK == result)
+            {
+                LoadSoundBankDefinition(openSoundBankDialog.FileName);
             }
         }
     }

@@ -395,8 +395,9 @@
             // loadBankToolStripMenuItem
             // 
             this.loadBankToolStripMenuItem.Name = "loadBankToolStripMenuItem";
-            this.loadBankToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.loadBankToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadBankToolStripMenuItem.Text = "Load Bank";
+            this.loadBankToolStripMenuItem.Click += new System.EventHandler(this.loadBankToolStripMenuItem_Click);
             // 
             // saveBankToolStripMenuItem
             // 
@@ -437,7 +438,7 @@
             // 
             // openSoundBankDialog
             // 
-            this.openSoundBankDialog.FileName = "*.xml";
+            this.openSoundBankDialog.Filter = "Sound Bank|*.bnk";
             this.openSoundBankDialog.Title = "Open Sound Bank";
             // 
             // importAudioDialog
