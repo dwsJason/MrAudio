@@ -938,5 +938,25 @@ namespace MrAudio
                 LoadSoundBankDefinition(openSoundBankDialog.FileName);
             }
         }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult result = exportAudioDialog.ShowDialog();
+
+            if (DialogResult.OK == result)
+            {
+                ExportAudioData(exportAudioDialog.FileName);
+            }
+        }
+
+        //
+        // Export out the audiodefs.asm file
+        // Export out the wavedata file
+        //
+        private void ExportAudioData(string pathName)
+        {
+
+        }
+
     }
 }

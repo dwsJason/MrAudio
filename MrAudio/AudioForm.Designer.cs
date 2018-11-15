@@ -66,6 +66,7 @@
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.pictureBoxGuide = new System.Windows.Forms.PictureBox();
             this.pictureBoxMap = new System.Windows.Forms.PictureBox();
+            this.exportAudioDialog = new System.Windows.Forms.SaveFileDialog();
             this.waveInfoBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWave)).BeginInit();
             this.audioBankBox.SuspendLayout();
@@ -439,6 +440,7 @@
             // openSoundBankDialog
             // 
             this.openSoundBankDialog.Filter = "Sound Bank|*.bnk";
+            this.openSoundBankDialog.RestoreDirectory = true;
             this.openSoundBankDialog.Title = "Open Sound Bank";
             // 
             // importAudioDialog
@@ -495,6 +497,13 @@
             this.pictureBoxMap.Size = new System.Drawing.Size(1006, 32);
             this.pictureBoxMap.TabIndex = 15;
             this.pictureBoxMap.TabStop = false;
+            // 
+            // exportAudioDialog
+            // 
+            this.exportAudioDialog.DefaultExt = "asm";
+            this.exportAudioDialog.Filter = "asm|*.asm";
+            this.exportAudioDialog.RestoreDirectory = true;
+            this.exportAudioDialog.Title = "Export Audio";
             // 
             // MrAudio
             // 
@@ -569,6 +578,7 @@
         private System.Windows.Forms.Label labelPath;
         private System.Windows.Forms.Label labelName;
         private System.Windows.Forms.Button buttonReset;
+        private System.Windows.Forms.SaveFileDialog exportAudioDialog;
     }
 }
 
