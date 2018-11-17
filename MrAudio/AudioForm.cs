@@ -950,12 +950,49 @@ namespace MrAudio
         }
 
         //
-        // Export out the audiodefs.asm file
-        // Export out the wavedata file
+        // Export out the audiodefs.asm
+        // Export out the audiodefs.h
+        // Export out the wavedata.bin
+        //      wavedata.bin
+        //          8 bit - version (current version 0)
+        //          8 bit - number of waves
+        //      wave defs
+        //          8 bit address
+        //          16 bit length (bytes)
+        //          ... wave data ...
         //
         private void ExportAudioData(string pathName)
         {
+            string basepath = pathName.Substring(0, pathName.Length - 4);
+            // For now we're going to use 2 criteria to decide which waves
+            // to inlcude
+            //
+            // 1.  Wave is not pinned (since this is used to signal ntp instruments)
+            // 2.  Wave has a DOC address
 
+            using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(basepath + ".h"))
+            {
+                file.WriteLine("/* Mr. Audio Wave Events */");
+                file.WriteLine("");
+                file.WriteLine("#ifndef MRAUDIO_EVENTS_");
+                file.WriteLine("#define MRAUDIO_EVENTS_\n");
+                file.WriteLine("enum {");
+                foreach (docData dd in docFiles)
+                {
+                    if ((!dd.m_pinned)&&(dd.m_address>=0))
+                    {
+                        file.WriteLine("\tSND_{0},", dd.m_name.ToUpper());
+                    }
+                }
+                file.WriteLine("};");
+                file.WriteLine("\n#endif\n");
+            }
+
+            foreach (docData dd in docFiles)
+            {
+
+            }
         }
 
     }
