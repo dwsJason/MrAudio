@@ -949,6 +949,23 @@ namespace MrAudio
             }
         }
 
+        private byte GetDocSize(int sizeBytes)
+        {
+            byte size = 0;
+
+            int[] sizeTable = { 256, 512, 1024, 2048, 4096, 8192, 16384, 32768 };
+
+            for (size = 0; size < sizeTable.Length; ++size)
+            {
+                if (sizeBytes <= sizeTable[size])
+                    break;
+            }
+
+            size |= (byte)(size << 3);
+
+            return size;
+        }
+
         //
         // Export out the audiodefs.asm
         // Export out the audiodefs.h
@@ -970,6 +987,7 @@ namespace MrAudio
             // 1.  Wave is not pinned (since this is used to signal ntp instruments)
             // 2.  Wave has a DOC address
 
+            // Output the C, Header File
             using (System.IO.StreamWriter file =
             new System.IO.StreamWriter(basepath + ".h"))
             {
@@ -989,11 +1007,97 @@ namespace MrAudio
                 file.WriteLine("\n#endif\n");
             }
 
-            foreach (docData dd in docFiles)
+            //
+            // Output the Merlin Data
+            //
+            using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(basepath + ".asm"))
             {
+                file.WriteLine("*");
+                file.WriteLine("* Mr. Audio DOC Register Data");
+                file.WriteLine("* Merlin Syntax");
+                file.WriteLine("*");
+                file.WriteLine("");
+                file.WriteLine("AudioTable");
 
+                foreach (docData dd in docFiles)
+                {
+                    if ((!dd.m_pinned) && (dd.m_address >= 0))
+                    {
+                        file.WriteLine("\tda\tSND_{0}", dd.m_name.ToUpper());
+                    }
+                }
+
+                file.WriteLine("");
+
+                foreach (docData dd in docFiles)
+                {
+                    if ((!dd.m_pinned) && (dd.m_address >= 0))
+                    {
+                        file.WriteLine("SND_{0}", dd.m_name.ToUpper());
+                        file.WriteLine("\tdw\t${0:X4}\t; Frequency", dd.m_freq / 51 );
+                        file.WriteLine("\tdb\t${0:X2}\t; Address", dd.m_address);
+                        file.WriteLine("\tdb\t${0:X2}\t; Size", GetDocSize(dd.m_size));
+                    }
+                }
+                file.WriteLine("");
             }
-        }
 
+            // Output the ORCA Data
+            using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(basepath + ".s"))
+            {
+                file.WriteLine("*");
+                file.WriteLine("* Mr. Audio DOC Register Data");
+                file.WriteLine("* ORCA Syntax");
+                file.WriteLine("*");
+                file.WriteLine("");
+                file.WriteLine("AudioTable anop");
+
+                foreach (docData dd in docFiles)
+                {
+                    if ((!dd.m_pinned) && (dd.m_address >= 0))
+                    {
+                        file.WriteLine("\tdc\ta'SND_{0}'", dd.m_name.ToUpper());
+                    }
+                }
+
+                file.WriteLine("");
+
+                foreach (docData dd in docFiles)
+                {
+                    if ((!dd.m_pinned) && (dd.m_address >= 0))
+                    {
+                        file.WriteLine("SND_{0} anop", dd.m_name.ToUpper());
+                        file.WriteLine("\tdc\ti,'${0:X4}'\t; Frequency", dd.m_freq / 51);
+                        file.WriteLine("\tdc\tb,'${0:X2}'\t; Address", dd.m_address);
+                        file.WriteLine("\tdc\tb,'${0:X2}'\t; Size", GetDocSize(dd.m_size));
+                    }
+                }
+                file.WriteLine("");
+            }
+
+#if false
+            // Output the Binary Bank Data
+            using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(basepath + ".h"))
+            {
+                file.WriteLine("/* Mr. Audio Wave Events */");
+                file.WriteLine("");
+                file.WriteLine("#ifndef MRAUDIO_EVENTS_");
+                file.WriteLine("#define MRAUDIO_EVENTS_\n");
+                file.WriteLine("enum {");
+                foreach (docData dd in docFiles)
+                {
+                    if ((!dd.m_pinned) && (dd.m_address >= 0))
+                    {
+                        file.WriteLine("\tSND_{0},", dd.m_name.ToUpper());
+                    }
+                }
+                file.WriteLine("};");
+                file.WriteLine("\n#endif\n");
+            }
+#endif
+        }
     }
 }
