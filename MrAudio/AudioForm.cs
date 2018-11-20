@@ -980,6 +980,8 @@ namespace MrAudio
         //
         private void ExportAudioData(string pathName)
         {
+            byte numWaves = 0;
+
             string basepath = pathName.Substring(0, pathName.Length - 4);
             // For now we're going to use 2 criteria to decide which waves
             // to inlcude
@@ -1000,6 +1002,7 @@ namespace MrAudio
                 {
                     if ((!dd.m_pinned)&&(dd.m_address>=0))
                     {
+                        numWaves++; // Used so later on we know how many waves we need
                         file.WriteLine("\tSND_{0},", dd.m_name.ToUpper());
                     }
                 }
@@ -1077,27 +1080,36 @@ namespace MrAudio
                 file.WriteLine("");
             }
 
-#if false
             // Output the Binary Bank Data
-            using (System.IO.StreamWriter file =
-            new System.IO.StreamWriter(basepath + ".h"))
+            using (System.IO.FileStream file =
+            new FileStream(basepath + ".bin", FileMode.Create, FileAccess.Write))
             {
-                file.WriteLine("/* Mr. Audio Wave Events */");
-                file.WriteLine("");
-                file.WriteLine("#ifndef MRAUDIO_EVENTS_");
-                file.WriteLine("#define MRAUDIO_EVENTS_\n");
-                file.WriteLine("enum {");
+                file.WriteByte(0);          // Current Version 0
+                file.WriteByte(numWaves);   // number of waves
+
                 foreach (docData dd in docFiles)
                 {
                     if ((!dd.m_pinned) && (dd.m_address >= 0))
                     {
-                        file.WriteLine("\tSND_{0},", dd.m_name.ToUpper());
+                        file.WriteByte((byte)dd.m_address);
+                        file.WriteByte((byte)dd.m_size);
+                        file.WriteByte((byte)(dd.m_size >> 8));
+
+                        byte[] waveData = ToByteArray(ToFreq(dd.ToWaveStream(),dd.m_freq));
+
+                        // Make sure the wabe data doesn't contain "Stop" bytes
+                        for (int idx = 0; idx < waveData.Length; ++idx)
+                        {
+                            if (0 == waveData[idx])
+                            {
+                                waveData[idx] = 1;
+                            }
+                        }
+
+                        file.Write(waveData, 0, waveData.Length);
                     }
                 }
-                file.WriteLine("};");
-                file.WriteLine("\n#endif\n");
             }
-#endif
         }
     }
 }
