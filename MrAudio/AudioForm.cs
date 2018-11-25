@@ -1072,9 +1072,9 @@ namespace MrAudio
                     if ((!dd.m_pinned) && (dd.m_address >= 0))
                     {
                         file.WriteLine("SND_{0} anop", dd.m_name.ToUpper());
-                        file.WriteLine("\tdc\ti,'${0:X4}'\t; Frequency", dd.m_freq / 51);
-                        file.WriteLine("\tdc\tb,'${0:X2}'\t; Address", dd.m_address);
-                        file.WriteLine("\tdc\tb,'${0:X2}'\t; Size", GetDocSize(dd.m_size));
+                        file.WriteLine("\tdc\ti'${0:X4}'\t; Frequency", dd.m_freq / 51);
+                        file.WriteLine("\tdc\th'{0:X2}'\t; Address", dd.m_address);
+                        file.WriteLine("\tdc\th'{0:X2}'\t; Size", GetDocSize(dd.m_size));
                     }
                 }
                 file.WriteLine("");
