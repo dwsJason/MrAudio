@@ -1161,7 +1161,6 @@ namespace MrAudio
                 file.WriteByte(0x4A); // 'J'
                 file.WriteByte(0x4C); // 'L'
                 file.WriteByte(0x41); // 'A'
-                file.WriteByte(0x42); // 'B'
 
                 file.WriteByte(0);          // Current Version 0
                 file.WriteByte(numWaves);   // number of waves, also number of sfx
