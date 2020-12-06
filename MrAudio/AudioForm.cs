@@ -1111,5 +1111,125 @@ namespace MrAudio
                 }
             }
         }
+
+        //
+        // Export a JoeyLib Audio File (*.JLA)
+        //
+        // wavedata.jla
+        //          8 bit - version (current version 0)
+        // 
+        //          8 bit - number of sfx
+        //      sfx defs - 1 for each sfx
+        //          16 bit Frequency  ; copied into DOC Register
+        //          8 bit Address     ; copied into DOC Register
+        //          8 bit Size        ; copied into DOC Register
+        //
+        //      sfx names - 1 for each sfx
+        //          C String 
+        //    
+        //          8 bit - number of waves
+        //      wave defs
+        //          8 bit address
+        //          16 bit length (bytes)
+        //          ... wave data ...
+        //
+        private void ExportJoeyLibAudio(string pathName)
+        {
+            byte numWaves = 0;
+
+            // Get the numWaves
+            foreach (docData dd in docFiles)
+            {
+                if ((!dd.m_pinned)&&(dd.m_address>=0))
+                {
+                    numWaves++; // Used so later on we know how many waves we need
+                }
+            }
+
+
+            string basepath = pathName.Substring(0, pathName.Length - 4);
+            // For now we're going to use 2 criteria to decide which waves
+            // to inlcude
+            //
+            // 1.  Wave is not pinned (since this is used to signal ntp instruments)
+            // 2.  Wave has a DOC address
+
+            // Output the Binary Bank Data
+            using (System.IO.FileStream file =
+            new FileStream(basepath + ".jla", FileMode.Create, FileAccess.Write))
+            {
+                file.WriteByte(0);          // Current Version 0
+                file.WriteByte(numWaves);   // number of waves, also number of sfx
+
+                // Output the Ensoniq Data
+                foreach (docData dd in docFiles)
+                {
+                    if ((!dd.m_pinned) && (dd.m_address >= 0))
+                    {
+                        int freq = dd.m_freq / 51;
+
+                        // Frequency, Lo + Hi
+                        file.WriteByte((byte)(freq & 0xFF));
+                        file.WriteByte((byte)((freq>>8) & 0xFF));
+                        // DOC Address
+                        file.WriteByte((byte)(dd.m_address & 0xFF));
+                        // DOC Size
+                        file.WriteByte((byte)(GetDocSize(dd.m_size)));
+                    }
+                }
+
+                // Output Sound Name Directory
+                foreach (docData dd in docFiles)
+                {
+                    if ((!dd.m_pinned) && (dd.m_address >= 0))
+                    {
+                        byte[] bytes = Encoding.ASCII.GetBytes(dd.m_name.ToUpper());
+                        foreach (byte b in bytes)
+                        {
+                            file.WriteByte( b );
+                        }
+                        file.WriteByte((byte)0);
+                    }
+                }
+                                            
+                file.WriteByte(numWaves);   // number of waves
+
+                foreach (docData dd in docFiles)
+                {
+                    if ((!dd.m_pinned) && (dd.m_address >= 0))
+                    {
+                        file.WriteByte((byte)dd.m_address);
+                        file.WriteByte((byte)dd.m_size);
+                        file.WriteByte((byte)(dd.m_size >> 8));
+
+                        byte[] waveData = ToByteArray(ToFreq(dd.ToWaveStream(),dd.m_freq));
+
+                        // Make sure the wabe data doesn't contain "Stop" bytes
+                        for (int idx = 0; idx < waveData.Length; ++idx)
+                        {
+                            if (0 == waveData[idx])
+                            {
+                                waveData[idx] = 1;
+                            }
+                        }
+
+                        file.Write(waveData, 0, waveData.Length);
+                    }
+                }
+            }
+        }
+
+
+        private void exportForJoeyLibToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult result = exportJoeyDialog.ShowDialog();
+
+            if (DialogResult.OK == result)
+            {
+                //ExportAudioData(exportJoeyDialog.FileName);
+                ExportJoeyLibAudio(exportJoeyDialog.FileName);
+            }
+
+        }
     }
 }
