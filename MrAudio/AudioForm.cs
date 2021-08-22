@@ -845,7 +845,7 @@ namespace MrAudio
             // basename,pinned status
             // pathname,freq,size
             using (System.IO.StreamWriter file =
-            new System.IO.StreamWriter(pathname))
+            new System.IO.StreamWriter(pathname, false))
             {
                 file.WriteLine("#/MrAudio");
                 file.WriteLine("version=1");
