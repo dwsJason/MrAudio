@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NAudio.Wave;
 using WaveFormRendererLib;
-//again test
+//another test
 namespace MrAudio
 {
     public partial class MrAudio : Form
